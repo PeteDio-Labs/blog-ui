@@ -27,12 +27,3 @@ export interface BlogPost {
     altText: string;
   };
 }
-
-export interface Media {
-  id: number;
-  type: 'IMAGE' | 'VIDEO' | 'AUDIO' | 'EXTERNAL_IMAGE';
-  url: string;
-  altText: string;
-  caption: string;
-  displayOrder: number;
-}

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router';
 import { useSearch } from '../hooks/useSearch';
 import BlogList from '../components/blog/BlogList';
 import Container from '../components/layout/Container';
@@ -8,19 +8,21 @@ import { Search } from 'lucide-react';
 const SearchPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [inputValue, setInputValue] = useState('');
+  const urlQuery = useMemo(() => new URLSearchParams(location.search).get('q') || '', [location.search]);
+  const inputRef = useRef<HTMLInputElement>(null);
   const { query, setQuery, results, loading, error } = useSearch();
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const q = searchParams.get('q') || '';
-    setQuery(q);
-    setInputValue(q);
-  }, [location.search, setQuery]);
+    setQuery(urlQuery);
+    if (inputRef.current) {
+      inputRef.current.value = urlQuery;
+    }
+  }, [urlQuery, setQuery]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate(`/search?q=${encodeURIComponent(inputValue.trim())}`);
+    const value = inputRef.current?.value.trim() || '';
+    navigate(`/search?q=${encodeURIComponent(value)}`);
   };
 
   return (
@@ -30,9 +32,9 @@ const SearchPage: React.FC = () => {
       </h1>
       <form onSubmit={handleSearch} className="relative w-full max-w-lg mx-auto mb-12">
         <input
+          ref={inputRef}
           type="search"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          defaultValue={urlQuery}
           className="input-neon w-full pl-12"
           placeholder="Search by title or tag..."
         />
@@ -42,7 +44,7 @@ const SearchPage: React.FC = () => {
       {query && (
         <div className="mt-8">
             <h2 className="heading-neon-secondary mb-4">
-                Results for "{query}"
+                Results for &ldquo;{query}&rdquo;
             </h2>
             <BlogList posts={results} loading={loading} error={error} />
         </div>

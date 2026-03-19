@@ -5,12 +5,10 @@ on:
     branches:
       - main
       - develop
-      - stage
   pull_request:
     branches:
       - main
       - develop
-      - stage
 
 permissions:
   pull-requests: write
@@ -28,20 +26,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run typecheck
 
       - name: Lint
-        run: npm run lint
+        run: bun run lint
+
+      - name: Test
+        run: bun test
 
       - name: Build
-        run: npm run build
+        run: bun run build
 
       - name: Build Docker image (validation only)
         uses: docker/build-push-action@v5
@@ -67,20 +68,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run typecheck
 
       - name: Lint
-        run: npm run lint
+        run: bun run lint
+
+      - name: Test
+        run: bun test
 
       - name: Build
-        run: npm run build
+        run: bun run build
 
       - name: Determine Docker tag
         id: docker-tag
@@ -89,10 +93,6 @@ jobs:
             echo "tag=main-latest" >> $GITHUB_OUTPUT
             echo "extra_tag=prod-latest" >> $GITHUB_OUTPUT
             echo "env=prod" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.ref }}" == "refs/heads/stage" ]]; then
-            echo "tag=stage-latest" >> $GITHUB_OUTPUT
-            echo "extra_tag=" >> $GITHUB_OUTPUT
-            echo "env=stage" >> $GITHUB_OUTPUT
           else
             echo "tag=develop-latest" >> $GITHUB_OUTPUT
             echo "extra_tag=dev-latest" >> $GITHUB_OUTPUT

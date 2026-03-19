@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useCallback, useState } from 'react';
+import { useParams } from 'react-router';
 import { useBlogPost } from '../hooks/useBlogPost';
 import Container from '../components/layout/Container';
 import Spinner from '../components/common/Spinner';
@@ -24,22 +24,19 @@ const BlogPostPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { post, loading, error } = useBlogPost(slug);
 
-  const contentRef = useRef<HTMLDivElement | null>(null);
   const [toc, setToc] = useState<Array<{ id: string; text: string; level: number }>>([]);
 
-  useEffect(() => {
-    if (!contentRef.current) return;
-    // Keep TOC simple: only include H2 headings
-    const nodes = contentRef.current.querySelectorAll('h2[id]');
+  const contentRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return;
+    const nodes = node.querySelectorAll('h2[id]');
     const items: Array<{ id: string; text: string; level: number }> = [];
     nodes.forEach((el) => {
       const id = el.getAttribute('id') || '';
       const text = el.textContent || '';
-      const level = 2;
-      if (id && text) items.push({ id, text, level });
+      if (id && text) items.push({ id, text, level: 2 });
     });
     setToc(items);
-  }, [post?.content]);
+  }, []);
 
   if (loading) {
     return <Spinner />;

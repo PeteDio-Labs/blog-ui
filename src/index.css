@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../tailwind.config.js";
+@plugin "@tailwindcss/typography";
 
 @layer base {
   body {
@@ -126,10 +126,6 @@
 
   .badge-dev {
     @apply inline-block px-3 py-1 bg-neon-cyan/20 text-neon-cyan border border-neon-cyan rounded-full text-xs font-semibold uppercase;
-  }
-
-  .badge-stage {
-    @apply inline-block px-3 py-1 bg-neon-orange/20 text-neon-orange border border-neon-orange rounded-full text-xs font-semibold uppercase;
   }
 
   .badge-prod {

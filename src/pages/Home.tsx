@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { motion, useReducedMotion } from 'framer-motion';
 import Container from '../components/layout/Container';
 import FeaturedPost from '../components/blog/FeaturedPost';

@@ -1,28 +1,25 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router';
 import Container from './Container';
-import { Menu, LogOut } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { useEnvironment } from '../../hooks/useEnvironment';
-import { useAuth } from '../../context/AuthContext';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { info } = useEnvironment();
-  const { user, logout } = useAuth();
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `font-medium transition-colors ${isActive ? 'link-neon-active' : 'link-neon'}`;
 
   const envBadgeColors = {
     prod: 'bg-red-500/20 border-red-500 text-red-400',
-    stage: 'bg-yellow-500/20 border-yellow-500 text-yellow-400',
     dev: 'bg-neon-green/20 border-neon-green text-neon-green'
   };
 
   return (
     <>
       {info && info.environment !== 'prod' && (
-        <div className={`text-center py-1 text-xs font-semibold border-b ${envBadgeColors[info.environment]}`}>
+        <div className={`text-center py-1 text-xs font-semibold border-b ${envBadgeColors[info.environment as keyof typeof envBadgeColors]}`}>
           <div className="flex items-center justify-center gap-3">
             <span>{info.environment.toUpperCase()} ENVIRONMENT</span>
             <span className="opacity-70">•</span>
@@ -39,23 +36,6 @@ const Header: React.FC = () => {
             <NavLink to="/" className={navLinkClass}>Home</NavLink>
             <NavLink to="/blog" className={navLinkClass}>Blog</NavLink>
             <NavLink to="/search" className={navLinkClass}>Search</NavLink>
-
-            {user && (
-              <>
-                <div className="h-6 w-px bg-neon-cyan/30"></div>
-                <NavLink to="/admin/posts" className={navLinkClass}>Posts</NavLink>
-                <div className="flex items-center gap-3">
-                  <span className="text-text-secondary text-sm">{user.displayName || user.username}</span>
-                  <button
-                    onClick={logout}
-                    className="text-error hover:text-error/80 text-sm flex items-center gap-1 transition-colors"
-                    title="Logout"
-                  >
-                    <LogOut className="w-4 h-4" />
-                  </button>
-                </div>
-              </>
-            )}
           </nav>
           <button className="md:hidden p-2 text-neon-cyan hover:text-neon-green transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <Menu className="w-6 h-6" />
@@ -67,22 +47,6 @@ const Header: React.FC = () => {
                   <NavLink to="/" className={navLinkClass} onClick={() => setIsMenuOpen(false)}>Home</NavLink>
                   <NavLink to="/blog" className={navLinkClass} onClick={() => setIsMenuOpen(false)}>Blog</NavLink>
                   <NavLink to="/search" className={navLinkClass} onClick={() => setIsMenuOpen(false)}>Search</NavLink>
-
-                  {user && (
-                    <>
-                      <div className="w-20 h-px bg-neon-cyan/30"></div>
-                      <NavLink to="/admin/posts" className={navLinkClass} onClick={() => setIsMenuOpen(false)}>Posts</NavLink>
-                      <div className="flex items-center gap-3">
-                        <span className="text-text-secondary text-sm">{user.displayName || user.username}</span>
-                        <button
-                          onClick={() => { logout(); setIsMenuOpen(false); }}
-                          className="text-error hover:text-error/80 text-sm flex items-center gap-1 transition-colors"
-                        >
-                          <LogOut className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </>
-                  )}
               </nav>
           </div>
         )}

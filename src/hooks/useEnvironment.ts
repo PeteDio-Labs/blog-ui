@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../services/api';
 
 export interface EnvironmentInfo {
-  environment: 'dev' | 'stage' | 'prod';
+  environment: 'dev' | 'prod';
   name: string;
   version: string;
 }
@@ -14,17 +14,16 @@ export const useEnvironment = () => {
   useEffect(() => {
     const fetchEnvironment = async () => {
       try {
-        const response = await api.get('/info');
+        const data = await api.get<{ environment: string; apiVersion?: string; version?: string }>('/info');
         setInfo({
-          environment: response.data.environment,
+          environment: data.environment as 'dev' | 'prod',
           name: 'Blog API',
-          version: response.data.apiVersion || response.data.version || 'unknown'
+          version: data.apiVersion || data.version || 'unknown'
         });
       } catch (error) {
         console.error('Failed to fetch environment info:', error);
-        // Fallback to local env var
         setInfo({
-          environment: (import.meta.env.VITE_ENVIRONMENT || 'dev') as 'dev' | 'stage' | 'prod',
+          environment: (import.meta.env.VITE_ENVIRONMENT || 'dev') as 'dev' | 'prod',
           name: 'Blog API',
           version: 'unknown'
         });

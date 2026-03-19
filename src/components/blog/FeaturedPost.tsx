@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { type BlogPost } from '../../types';
 import { formatDate } from '../../utils/dateFormatter';
 
