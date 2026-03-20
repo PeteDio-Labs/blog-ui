@@ -15,7 +15,7 @@ const FeaturedPost: React.FC<FeaturedPostProps> = ({ post }) => {
 
   return (
     <Link to={`/blog/${post.slug}`} className="block group">
-      <article className="card-neon overflow-hidden">
+      <article className="glass-card border border-neon-cyan/20 overflow-hidden hover:border-neon-cyan/40 hover:shadow-lg hover:shadow-neon-cyan/10 transition-all duration-300">
         <div className="w-full h-96 bg-gradient-to-br from-neon-pink/20 via-neon-orange/20 to-neon-blue/30 flex items-center justify-center relative overflow-hidden">
           {post.coverImage ? (
             <img
@@ -42,7 +42,7 @@ const FeaturedPost: React.FC<FeaturedPostProps> = ({ post }) => {
             {post.title}
           </h2>
 
-          <p className="text-neon-cyan text-lg mb-6 line-clamp-3">
+          <p className="text-text-primary text-lg mb-6 line-clamp-3">
             {post.excerpt}
           </p>
 
@@ -58,7 +58,7 @@ const FeaturedPost: React.FC<FeaturedPostProps> = ({ post }) => {
 
           <div className="flex items-center justify-between">
             <span className="text-neon-orange font-medium">{formatDate(post.publishedAt)}</span>
-            <span className="px-6 py-3 bg-gradient-to-r from-neon-pink to-neon-orange text-dark-bg font-bold rounded-lg group-hover:shadow-neon-glow-orange transition-all duration-300 transform group-hover:scale-105">
+            <span className="px-6 py-3 bg-gradient-to-r from-neon-pink to-neon-orange text-dark-bg font-bold rounded-xl group-hover:shadow-neon-glow-orange transition-all duration-300 transform group-hover:scale-105">
               Read More →
             </span>
           </div>

@@ -1,118 +1,178 @@
+@import "./theme.css";
 @import "tailwindcss";
 @config "../tailwind.config.js";
 @plugin "@tailwindcss/typography";
 
 @layer base {
+  :root {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
-    @apply bg-dark-bg text-neon-cyan font-sans antialiased;
-    background-image:
-      radial-gradient(circle at 20% 50%, rgba(255, 0, 85, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(255, 140, 0, 0.06) 0%, transparent 50%),
-      radial-gradient(circle at 50% 80%, rgba(0, 255, 255, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 10% 90%, rgba(0, 255, 127, 0.05) 0%, transparent 50%);
+    @apply bg-dark-bg text-text-primary font-sans antialiased;
+    background: linear-gradient(
+      135deg,
+      var(--theme-bg) 0%,
+      var(--theme-bg-mid) 50%,
+      var(--theme-bg) 100%
+    );
+    background-attachment: fixed;
     margin: 0;
-    display: flex;
-    flex-direction: column;
     min-height: 100vh;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply text-neon-green font-bold;
+    color: var(--theme-accent-heading);
+    @apply font-bold;
   }
 
   a {
-    @apply text-neon-blue hover:text-neon-pink transition-colors duration-200;
+    @apply text-accent-tertiary hover:text-accent-primary transition-colors duration-200;
   }
 
   ::selection {
-    @apply bg-neon-pink text-dark-bg;
+    @apply bg-accent-secondary text-dark-bg;
   }
 
   ::-moz-selection {
-    @apply bg-neon-pink text-dark-bg;
+    @apply bg-accent-secondary text-dark-bg;
   }
 }
 
 @layer components {
+  /* Glass Material System */
+  .glass-card {
+    background: rgba(var(--glass-surface), 0.6);
+    backdrop-filter: blur(40px) saturate(1.8);
+    border: 1px solid rgba(var(--glass-border), 0.1);
+    box-shadow:
+      0 8px 32px 0 rgba(var(--glass-shadow), 0.37),
+      inset 0 -2px 8px 0 rgba(var(--glass-border), 0.05),
+      inset 0 1px 2px 0 rgba(var(--glass-border), 0.1);
+    border-radius: 1rem;
+    padding: 0;
+  }
+
+  .glass-panel {
+    background: rgba(var(--glass-surface), 0.75);
+    backdrop-filter: blur(30px) saturate(1.5);
+    border: 1px solid rgba(var(--glass-border), 0.1);
+    box-shadow:
+      0 8px 32px 0 rgba(var(--glass-shadow), 0.37),
+      inset 0 -2px 8px 0 rgba(var(--glass-border), 0.05),
+      inset 0 1px 2px 0 rgba(var(--glass-border), 0.1);
+  }
+
+  .glass-modal {
+    background: rgba(var(--glass-surface), 0.85);
+    backdrop-filter: blur(60px) saturate(2);
+    border: 1px solid rgba(var(--glass-border), 0.1);
+    box-shadow:
+      0 8px 32px 0 rgba(var(--glass-shadow), 0.37),
+      inset 0 -2px 8px 0 rgba(var(--glass-border), 0.05),
+      inset 0 1px 2px 0 rgba(var(--glass-border), 0.1);
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .glass-card,
+    .glass-panel,
+    .glass-modal {
+      background: rgba(var(--glass-surface), 0.95);
+      backdrop-filter: none;
+    }
+  }
+
   /* Typography classes */
   .heading-neon-primary {
-    @apply text-4xl md:text-5xl font-bold text-neon-green leading-tight;
+    @apply text-4xl md:text-5xl font-bold text-accent-heading leading-tight;
   }
 
   .heading-neon-secondary {
-    @apply text-3xl md:text-4xl font-bold text-neon-green;
+    @apply text-3xl md:text-4xl font-bold text-accent-heading;
   }
 
   .text-neon-meta {
-    @apply text-neon-blue text-sm;
+    @apply text-accent-tertiary text-sm;
   }
 
   .text-neon-body {
-    @apply text-neon-cyan;
+    @apply text-text-primary;
   }
 
   /* Tag/Badge styles */
   .tag-neon {
-    @apply inline-block px-3 py-1 bg-dark-bg border border-neon-blue text-neon-blue rounded-full
-           hover:border-neon-cyan hover:text-neon-cyan transition-all duration-300;
+    @apply inline-block px-3 py-1 bg-dark-bg border border-accent-tertiary text-accent-tertiary rounded-full
+           hover:border-accent-primary hover:text-accent-primary transition-all duration-300;
   }
 
   .tag-neon-success {
-    @apply inline-block px-3 py-1 bg-neon-green/10 text-neon-green border border-neon-green rounded-full
-           hover:bg-neon-green/20 transition-all duration-300;
+    @apply inline-block px-3 py-1 bg-success/10 text-success border border-success rounded-full
+           hover:bg-success/20 transition-all duration-300;
   }
 
   .tag-neon-warning {
-    @apply inline-block px-3 py-1 bg-neon-orange/10 text-neon-orange border border-neon-orange rounded-full
-           hover:bg-neon-orange/20 transition-all duration-300;
+    @apply inline-block px-3 py-1 bg-warning/10 text-warning border border-warning rounded-full
+           hover:bg-warning/20 transition-all duration-300;
   }
 
   /* Link styles */
   .link-neon {
-    @apply text-neon-blue hover:text-neon-cyan transition-all duration-200;
+    @apply text-accent-tertiary hover:text-accent-primary transition-all duration-200;
   }
 
   .link-neon-active {
-    @apply text-neon-cyan border-b-2 border-neon-cyan pb-1;
+    @apply text-accent-primary border-b-2 border-accent-primary pb-1;
   }
 
   /* Layout styles */
-  .footer-neon {
-    @apply bg-overlay border-t border-neon-cyan/30 text-neon-cyan mt-auto;
+  .header-neon {
+    @apply fixed top-0 z-50 w-full border-b border-accent-primary/20;
+    background: rgba(var(--glass-surface), 0.75);
+    backdrop-filter: blur(30px) saturate(1.5);
   }
 
-  .header-neon {
-    @apply bg-overlay border-b border-neon-cyan/30 sticky top-0 z-40 backdrop-blur-sm;
+  .footer-neon {
+    @apply border-t border-accent-primary/20 text-text-secondary;
+    background: rgba(var(--glass-surface), 0.75);
+    backdrop-filter: blur(30px) saturate(1.5);
   }
 
   /* Button styles */
   .btn-primary {
-      @apply px-6 py-3 bg-neon-green text-dark-bg font-bold rounded-lg
-        hover:bg-neon-cyan hover:text-dark-bg hover:shadow-neon-cyan
-        transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-neon-green/50;
+    @apply px-6 py-3 bg-accent-primary text-dark-bg font-bold rounded-xl
+      hover:shadow-neon-cyan
+      transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent-primary/50;
   }
 
   .btn-secondary {
-    @apply px-6 py-3 border-2 border-neon-cyan text-neon-cyan font-medium rounded-lg
-           hover:bg-neon-cyan hover:text-dark-bg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-neon-cyan/40;
+    @apply px-6 py-3 border border-accent-primary/40 text-accent-primary font-medium rounded-xl
+           bg-white/5 backdrop-blur-xl
+           hover:bg-accent-primary/10 hover:border-accent-primary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-primary/40;
   }
 
-  /* CTA gradient button (pink → orange) */
+  /* CTA gradient button */
   .btn-cta {
-    @apply px-6 py-3 bg-gradient-to-r from-neon-pink to-neon-orange text-dark-bg font-bold rounded-lg
+    @apply px-6 py-3 bg-gradient-to-r from-accent-secondary to-accent-primary text-dark-bg font-bold rounded-xl
            hover:shadow-neon-glow-pink transition-all duration-300 transform hover:scale-105
-           focus:outline-none focus:ring-2 focus:ring-neon-pink/50;
+           focus:outline-none focus:ring-2 focus:ring-accent-secondary/50;
   }
 
   /* Input styles */
   .input-neon {
-    @apply bg-dark-bg border-2 border-neon-blue text-text-primary rounded-lg px-4 py-3
-           focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 transition-all;
+    @apply bg-white/5 border border-accent-tertiary/40 text-text-primary rounded-xl px-4 py-3
+           focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/50 transition-all
+           backdrop-blur-xl;
   }
 
   /* Spinner */
   .spinner-neon {
-    @apply animate-spin rounded-full border-t-2 border-neon-cyan;
+    @apply animate-spin rounded-full border-t-2 border-accent-primary;
   }
 
   /* Badge styles */
@@ -125,7 +185,7 @@
   }
 
   .badge-dev {
-    @apply inline-block px-3 py-1 bg-neon-cyan/20 text-neon-cyan border border-neon-cyan rounded-full text-xs font-semibold uppercase;
+    @apply inline-block px-3 py-1 bg-accent-primary/20 text-accent-primary border border-accent-primary rounded-full text-xs font-semibold uppercase;
   }
 
   .badge-prod {
@@ -134,49 +194,42 @@
 
   /* Card styles */
   .card-neon {
-    @apply bg-dark-bg border-2 border-neon-cyan/30 rounded-lg p-6
-           hover:border-neon-cyan hover:shadow-lg hover:shadow-neon-cyan/20 transition-all duration-300;
+    @apply border border-accent-primary/20 rounded-2xl p-6
+           hover:border-accent-primary/40 hover:shadow-lg hover:shadow-accent-primary/10 transition-all duration-300;
+    background: rgba(var(--glass-surface), 0.6);
+    backdrop-filter: blur(40px) saturate(1.8);
   }
 
   .card-neon-accent {
-    @apply bg-surface-dark border-2 border-neon-blue/30 rounded-lg p-6
-           hover:border-neon-cyan hover:shadow-neon-cyan transition-all duration-300;
+    @apply border border-accent-tertiary/20 rounded-2xl p-6
+           hover:border-accent-primary/40 hover:shadow-neon-cyan transition-all duration-300;
+    background: rgba(var(--glass-surface), 0.6);
+    backdrop-filter: blur(40px) saturate(1.8);
   }
 
   /* Text glow effect */
   .text-glow {
-    @apply drop-shadow-[0_0_8px_rgba(0,255,255,0.5)];
+    filter: drop-shadow(var(--theme-glow-primary));
   }
 
   .text-glow-pink {
-    @apply drop-shadow-[0_0_8px_rgba(255,0,85,0.5)];
+    filter: drop-shadow(var(--theme-glow-secondary));
   }
 
   .text-glow-orange {
-    @apply drop-shadow-[0_0_8px_rgba(255,140,0,0.5)];
+    filter: drop-shadow(var(--theme-glow-secondary));
   }
 
-  /* Accent tag styles with pink/orange */
+  /* Accent tag styles */
   .tag-accent-pink {
-    @apply inline-block px-3 py-1 bg-dark-bg border border-neon-pink text-neon-pink rounded-full
-           hover:border-neon-pink hover:bg-neon-pink/10 hover:shadow-neon-pink transition-all duration-300;
+    @apply inline-block px-3 py-1 bg-dark-bg border border-accent-secondary text-accent-secondary rounded-full
+           hover:border-accent-secondary hover:bg-accent-secondary/10 hover:shadow-neon-pink transition-all duration-300;
   }
 
   .tag-accent-orange {
-    @apply inline-block px-3 py-1 bg-dark-bg border border-neon-orange text-neon-orange rounded-full
-           hover:border-neon-orange hover:bg-neon-orange/10 hover:shadow-neon-orange transition-all duration-300;
+    @apply inline-block px-3 py-1 bg-dark-bg border border-accent-primary text-accent-primary rounded-full
+           hover:border-accent-primary hover:bg-accent-primary/10 hover:shadow-neon-cyan transition-all duration-300;
   }
-}
-
-:root {
-  font-family: 'Inter', sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {

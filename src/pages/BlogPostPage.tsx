@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useParams } from 'react-router';
 import { useBlogPost } from '../hooks/useBlogPost';
-import Container from '../components/layout/Container';
 import Spinner from '../components/common/Spinner';
 import ErrorMessage from '../components/common/ErrorMessage';
 import { formatDate } from '../utils/dateFormatter';
@@ -47,7 +46,7 @@ const BlogPostPage: React.FC = () => {
   }
 
   return (
-    <Container className="py-12 max-w-6xl mx-auto">
+    <div className="max-w-6xl">
       <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_260px] gap-8">
         <article>
         <header className="mb-8">
@@ -58,7 +57,7 @@ const BlogPostPage: React.FC = () => {
             <span>Published on {formatDate(post.publishedAt)}</span>
             {post.authorName && (
               <>
-                <span className="mx-2">•</span>
+                <span className="mx-2">&bull;</span>
                 <span>By {post.authorName}</span>
               </>
             )}
@@ -73,11 +72,11 @@ const BlogPostPage: React.FC = () => {
             </div>
           )}
         </header>
-        
+
         {/* Content */}
           <div
             ref={contentRef}
-            className="prose prose-invert lg:prose-xl max-w-none prose-headings:text-neon-green prose-headings:scroll-mt-24 prose-p:text-neon-cyan prose-a:text-neon-blue prose-strong:text-neon-green prose-code:text-neon-cyan prose-pre:bg-overlay prose-pre:border prose-pre:border-neon-cyan/30 prose-li:text-neon-cyan prose-blockquote:text-neon-blue prose-blockquote:border-neon-cyan"
+            className="prose prose-invert lg:prose-xl max-w-none prose-headings:text-neon-green prose-headings:scroll-mt-24 prose-p:text-text-primary prose-a:text-neon-blue prose-strong:text-neon-green prose-code:text-neon-cyan prose-pre:bg-surface-dark prose-pre:border prose-pre:border-neon-cyan/20 prose-li:text-text-primary prose-blockquote:text-neon-blue prose-blockquote:border-neon-cyan"
           >
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
@@ -109,8 +108,8 @@ const BlogPostPage: React.FC = () => {
         {/* Simple TOC (desktop) */}
         {toc.length > 0 && (
           <aside className="hidden xl:block">
-            <div className="sticky top-24 border-l border-neon-cyan/30 pl-4 text-sm">
-              <div className="text-lg font-bold text-neon-cyan mb-4">On this page</div>
+            <div className="sticky top-24 glass-card border border-neon-cyan/20 p-4 text-sm">
+              <div className="text-sm font-bold text-neon-cyan mb-4 tracking-[0.15em] uppercase">On this page</div>
               <nav>
                 <ul className="space-y-2">
                   {toc.map((item) => (
@@ -136,7 +135,7 @@ const BlogPostPage: React.FC = () => {
           </aside>
         )}
       </div>
-    </Container>
+    </div>
   );
 };
 

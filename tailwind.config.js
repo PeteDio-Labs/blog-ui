@@ -7,40 +7,45 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Dark theme
-        'dark-bg': '#0A0F24',
-        'surface-dark': '#141B33',
-        'surface-hover': '#1A2344',
-        // Neon Cyberpunk Theme
-        'neon-cyan': '#00FFFF',
-        'neon-green': '#00FF7F',
-        'neon-blue': '#5C9EFF',
-        'neon-orange': '#FF8C00',
-        'neon-pink': '#FF0055',
-        'overlay': 'rgba(10, 15, 36, 0.95)',
+        // Backgrounds
+        'dark-bg': 'var(--theme-bg)',
+        'surface-dark': 'var(--theme-surface)',
+        'surface-hover': 'var(--theme-surface-hover)',
+        'overlay': 'var(--theme-overlay)',
+        // Accents (semantic names kept for compat, values from theme)
+        'accent-primary': 'var(--theme-accent-primary)',
+        'accent-secondary': 'var(--theme-accent-secondary)',
+        'accent-tertiary': 'var(--theme-accent-tertiary)',
+        'accent-heading': 'var(--theme-accent-heading)',
+        // Legacy neon aliases → map to theme accents
+        'neon-cyan': 'var(--theme-accent-primary)',
+        'neon-pink': 'var(--theme-accent-secondary)',
+        'neon-blue': 'var(--theme-accent-tertiary)',
+        'neon-green': 'var(--theme-accent-heading)',
+        'neon-orange': 'var(--theme-accent-secondary)',
         // Status colors
-        'warning': '#FFD700',
-        'success': '#00FF7F',
-        'error': '#FF3232',
-        'info': '#5C9EFF',
+        'warning': 'var(--theme-status-warning)',
+        'success': 'var(--theme-status-success)',
+        'error': 'var(--theme-status-error)',
+        'info': 'var(--theme-status-info)',
         // Text colors
-        'text-primary': '#E0E6F0',
-        'text-secondary': '#8A94A8',
-        'text-muted': '#5A6374',
+        'text-primary': 'var(--theme-text-primary)',
+        'text-secondary': 'var(--theme-text-secondary)',
+        'text-muted': 'var(--theme-text-muted)',
       },
       boxShadow: {
-        'neon-cyan': '0 0 10px rgba(0, 255, 255, 0.3)',
-        'neon-blue': '0 0 10px rgba(92, 158, 255, 0.3)',
-        'neon-pink': '0 0 10px rgba(255, 0, 85, 0.3)',
-        'neon-orange': '0 0 10px rgba(255, 140, 0, 0.3)',
-        'neon-glow-cyan': '0 0 20px rgba(0, 255, 255, 0.5)',
-        'neon-glow-blue': '0 0 20px rgba(92, 158, 255, 0.5)',
-        'neon-glow-green': '0 0 20px rgba(0, 255, 127, 0.5)',
-        'neon-glow-pink': '0 0 20px rgba(255, 0, 85, 0.5)',
-        'neon-glow-orange': '0 0 20px rgba(255, 140, 0, 0.5)',
+        'neon-cyan': 'var(--theme-glow-primary)',
+        'neon-blue': 'var(--theme-glow-tertiary)',
+        'neon-pink': 'var(--theme-glow-secondary)',
+        'neon-orange': 'var(--theme-glow-secondary)',
+        'neon-glow-cyan': 'var(--theme-glow-primary-lg)',
+        'neon-glow-blue': 'var(--theme-glow-primary-lg)',
+        'neon-glow-green': 'var(--theme-glow-primary-lg)',
+        'neon-glow-pink': 'var(--theme-glow-secondary-lg)',
+        'neon-glow-orange': 'var(--theme-glow-secondary-lg)',
       },
       borderColor: {
-        DEFAULT: 'rgba(0, 255, 255, 0.3)', // neon-cyan with transparency
+        DEFAULT: 'color-mix(in srgb, var(--theme-accent-primary) 30%, transparent)',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
@@ -49,33 +54,33 @@ export default {
       typography: {
         DEFAULT: {
           css: {
-            color: '#E0E6F0',
+            color: 'var(--theme-text-primary)',
             a: {
-              color: '#00FFFF',
+              color: 'var(--theme-accent-primary)',
               '&:hover': {
-                color: '#5C9EFF',
+                color: 'var(--theme-accent-tertiary)',
               },
             },
-            strong: { color: '#E0E6F0' },
-            h1: { color: '#00FF7F' },
-            h2: { color: '#00FF7F' },
-            h3: { color: '#00FF7F' },
+            strong: { color: 'var(--theme-text-primary)' },
+            h1: { color: 'var(--theme-accent-heading)' },
+            h2: { color: 'var(--theme-accent-heading)' },
+            h3: { color: 'var(--theme-accent-heading)' },
             code: {
-              color: '#5C9EFF',
-              backgroundColor: '#141B33',
+              color: 'var(--theme-accent-tertiary)',
+              backgroundColor: 'var(--theme-surface)',
               padding: '0.25rem 0.5rem',
               borderRadius: '0.25rem',
             },
             pre: {
-              backgroundColor: '#141B33',
-              border: '1px solid rgba(92, 158, 255, 0.3)',
+              backgroundColor: 'var(--theme-surface)',
+              border: '1px solid color-mix(in srgb, var(--theme-accent-tertiary) 30%, transparent)',
             },
             table: {
-              borderColor: 'rgba(92, 158, 255, 0.3)',
+              borderColor: 'color-mix(in srgb, var(--theme-accent-tertiary) 30%, transparent)',
             },
             th: {
-              color: '#00FFFF',
-              backgroundColor: '#141B33',
+              color: 'var(--theme-accent-primary)',
+              backgroundColor: 'var(--theme-surface)',
             },
           },
         },

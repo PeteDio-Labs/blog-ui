@@ -1,57 +1,71 @@
 import React from 'react';
-import { Link, NavLink } from 'react-router';
-import Container from './Container';
+import { Link } from 'react-router';
 import { Menu } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useEnvironment } from '../../hooks/useEnvironment';
 
-const Header: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+interface HeaderProps {
+  onMenuToggle: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
   const { info } = useEnvironment();
 
-  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `font-medium transition-colors ${isActive ? 'link-neon-active' : 'link-neon'}`;
-
-  const envBadgeColors = {
-    prod: 'bg-red-500/20 border-red-500 text-red-400',
-    dev: 'bg-neon-green/20 border-neon-green text-neon-green'
-  };
-
   return (
-    <>
-      {info && info.environment !== 'prod' && (
-        <div className={`text-center py-1 text-xs font-semibold border-b ${envBadgeColors[info.environment as keyof typeof envBadgeColors]}`}>
-          <div className="flex items-center justify-center gap-3">
-            <span>{info.environment.toUpperCase()} ENVIRONMENT</span>
-            <span className="opacity-70">•</span>
-            <span className="opacity-70">{info.name} v{info.version}</span>
-          </div>
-        </div>
-      )}
-      <header className="header-neon">
-        <Container className="flex items-center justify-between h-16">
-          <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-neon-pink via-neon-orange to-neon-green bg-clip-text text-transparent hover:from-neon-orange hover:via-neon-pink hover:to-neon-cyan transition-all duration-500 !text-transparent hover:!text-transparent">
-            PeteDio Labs
-          </Link>
-          <nav className="hidden md:flex space-x-8 items-center">
-            <NavLink to="/" className={navLinkClass}>Home</NavLink>
-            <NavLink to="/blog" className={navLinkClass}>Blog</NavLink>
-            <NavLink to="/search" className={navLinkClass}>Search</NavLink>
-          </nav>
-          <button className="md:hidden p-2 text-neon-cyan hover:text-neon-green transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <Menu className="w-6 h-6" />
+    <header className="header-neon">
+      <div className="flex h-16 items-center justify-between px-6">
+        <div className="flex items-center gap-3">
+          <button
+            className="md:hidden p-2 text-text-secondary hover:text-neon-cyan transition-colors rounded-lg hover:bg-white/[0.06]"
+            onClick={onMenuToggle}
+          >
+            <Menu className="w-5 h-5" />
           </button>
-        </Container>
-        {isMenuOpen && (
-          <div className="md:hidden border-t border-neon-cyan/30">
-              <nav className="flex flex-col items-center space-y-4 py-4">
-                  <NavLink to="/" className={navLinkClass} onClick={() => setIsMenuOpen(false)}>Home</NavLink>
-                  <NavLink to="/blog" className={navLinkClass} onClick={() => setIsMenuOpen(false)}>Blog</NavLink>
-                  <NavLink to="/search" className={navLinkClass} onClick={() => setIsMenuOpen(false)}>Search</NavLink>
-              </nav>
-          </div>
-        )}
-      </header>
-    </>
+          <Link to="/" className="flex items-center gap-0.5">
+            {'PeteDio Labs'.split('').map((char, i) => (
+              <motion.span
+                key={i}
+                className="text-lg font-bold"
+                style={{
+                  background: 'linear-gradient(90deg, var(--theme-accent-secondary), var(--theme-accent-primary), var(--theme-accent-tertiary), var(--theme-accent-secondary))',
+                  backgroundSize: '200% 100%',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+                animate={{
+                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: i * 0.08,
+                }}
+                whileHover={{
+                  scale: 1.2,
+                  transition: { type: 'spring', stiffness: 500, damping: 15 },
+                }}
+              >
+                {char === ' ' ? '\u00A0' : char}
+              </motion.span>
+            ))}
+          </Link>
+        </div>
+        <div className="flex items-center gap-4">
+          {info && info.environment !== 'prod' && (
+            <div className="flex items-center gap-3">
+              <span className="badge-dev text-[10px]">
+                {info.environment.toUpperCase()}
+              </span>
+              <span className="text-xs text-text-muted hidden sm:inline">
+                {info.name} v{info.version}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
   );
 };
 

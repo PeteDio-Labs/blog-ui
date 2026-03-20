@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useSearch } from '../hooks/useSearch';
 import BlogList from '../components/blog/BlogList';
-import Container from '../components/layout/Container';
 import { Search } from 'lucide-react';
 
 const SearchPage: React.FC = () => {
@@ -26,11 +25,11 @@ const SearchPage: React.FC = () => {
   };
 
   return (
-    <Container className="py-12">
-      <h1 className="heading-neon-primary mb-8 text-center">
+    <article className="space-y-6">
+      <h1 className="heading-neon-primary">
         Search Posts
       </h1>
-      <form onSubmit={handleSearch} className="relative w-full max-w-lg mx-auto mb-12">
+      <form onSubmit={handleSearch} className="relative w-full max-w-lg">
         <input
           ref={inputRef}
           type="search"
@@ -42,14 +41,14 @@ const SearchPage: React.FC = () => {
       </form>
 
       {query && (
-        <div className="mt-8">
+        <div className="mt-4">
             <h2 className="heading-neon-secondary mb-4">
                 Results for &ldquo;{query}&rdquo;
             </h2>
             <BlogList posts={results} loading={loading} error={error} />
         </div>
       )}
-    </Container>
+    </article>
   );
 };
 

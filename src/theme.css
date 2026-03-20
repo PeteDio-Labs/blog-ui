@@ -1,0 +1,49 @@
+/*
+ * Blog Theme — Swap colors here to retheme the entire app.
+ *
+ * Naming convention (semantic, not color-specific):
+ *   --theme-bg-*       Backgrounds
+ *   --theme-surface-*  Elevated surfaces (cards, panels)
+ *   --theme-accent-*   Primary / secondary / tertiary accent
+ *   --theme-text-*     Text hierarchy
+ *   --theme-status-*   Semantic status colors
+ *   --theme-glass-*    Glass material system (RGB triplets)
+ */
+
+:root {
+  /* ── Backgrounds ── */
+  --theme-bg:            #0B0E1A;
+  --theme-bg-mid:        #10142A;
+  --theme-surface:       #151A30;
+  --theme-surface-hover: #1C2240;
+  --theme-overlay:       rgba(11, 14, 26, 0.95);
+
+  /* ── Accents ── */
+  --theme-accent-primary:   #00DFFF;   /* ice blue — links, active states, borders */
+  --theme-accent-secondary: #FF3366;   /* electric rose — CTA, hover, highlights */
+  --theme-accent-tertiary:  #3B82F6;   /* true blue — metadata, subtle accents */
+  --theme-accent-heading:   #F0F0F0;   /* near-white — headings */
+
+  /* ── Text ── */
+  --theme-text-primary:   #E2E8F0;
+  --theme-text-secondary: #8A94A8;
+  --theme-text-muted:     #5A6374;
+
+  /* ── Status ── */
+  --theme-status-success: #34D399;
+  --theme-status-warning: #FBBF24;
+  --theme-status-error:   #F87171;
+  --theme-status-info:    #60A5FA;
+
+  /* ── Glass Material (RGB triplets) ── */
+  --glass-surface: 11 14 26;
+  --glass-border:  0 223 255;
+  --glass-shadow:  0 0 0;
+
+  /* ── Shadows (glow) ── */
+  --theme-glow-primary:   0 0 10px rgba(0, 223, 255, 0.3);
+  --theme-glow-secondary: 0 0 10px rgba(255, 51, 102, 0.3);
+  --theme-glow-tertiary:  0 0 10px rgba(59, 130, 246, 0.3);
+  --theme-glow-primary-lg:   0 0 20px rgba(0, 223, 255, 0.5);
+  --theme-glow-secondary-lg: 0 0 20px rgba(255, 51, 102, 0.5);
+}
