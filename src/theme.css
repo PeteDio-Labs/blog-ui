@@ -44,6 +44,8 @@
   --theme-glow-primary:   0 0 10px rgba(0, 223, 255, 0.3);
   --theme-glow-secondary: 0 0 10px rgba(255, 51, 102, 0.3);
   --theme-glow-tertiary:  0 0 10px rgba(59, 130, 246, 0.3);
+  --theme-glow-success:   0 0 10px rgba(52, 211, 153, 0.3);
   --theme-glow-primary-lg:   0 0 20px rgba(0, 223, 255, 0.5);
   --theme-glow-secondary-lg: 0 0 20px rgba(255, 51, 102, 0.5);
+  --theme-glow-success-lg:   0 0 20px rgba(52, 211, 153, 0.5);
 }

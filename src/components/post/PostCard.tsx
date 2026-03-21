@@ -24,7 +24,7 @@ export default function PostCard({ post }: PostCardProps) {
         {post.title}
       </h3>
       {post.excerpt && (
-        <p className="mt-2 text-sm text-text-secondary line-clamp-2">
+        <p className="mt-2 text-sm text-text-primary line-clamp-2">
           {post.excerpt}
         </p>
       )}

@@ -28,7 +28,7 @@ export default function Home() {
           initial="hidden"
           animate="show"
           transition={{ duration: 0.35 }}
-          className="glass-card border border-neon-cyan/20 p-6 md:p-8"
+          className="card-featured glass-card p-6 md:p-8"
         >
           <div className="text-xs text-accent-tertiary uppercase tracking-[0.2em] mb-3">
             {featured.isFeatured ? 'Featured' : 'Latest'}
@@ -39,7 +39,7 @@ export default function Home() {
             </h2>
           </Link>
           {featured.excerpt && (
-            <p className="mt-3 text-text-secondary line-clamp-3">{featured.excerpt}</p>
+            <p className="mt-3 text-text-primary line-clamp-3">{featured.excerpt}</p>
           )}
           {featured.tags.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">
