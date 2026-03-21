@@ -1,186 +1,89 @@
-import React from 'react';
 import { Link } from 'react-router';
 import { motion, useReducedMotion } from 'framer-motion';
-import FeaturedPost from '../components/blog/FeaturedPost';
-import RecentPosts from '../components/blog/RecentPosts';
 import { useBlogPosts } from '../hooks/useBlogPosts';
-import { formatDate } from '../utils/dateFormatter';
+import PostCard from '../components/post/PostCard';
+import Spinner from '../components/common/Spinner';
+import ErrorMessage from '../components/common/ErrorMessage';
 
-const Home: React.FC = () => {
-  const { posts, loading, error } = useBlogPosts();
+export default function Home() {
+  const { posts, loading, error } = useBlogPosts(1, 10);
   const prefersReducedMotion = useReducedMotion();
 
-  const featuredPost = posts.length > 0 ? posts[0] : null;
-  const recentPosts = posts.slice(1, 4);
+  const featured = posts.find((p) => p.isFeatured) ?? posts[0] ?? null;
+  const rest = posts.filter((p) => p !== featured);
 
-  const ease = [0.16, 1, 0.3, 1] as const;
-
-  const heroTransition = prefersReducedMotion
-    ? { duration: 0 }
-    : { duration: 0.55, ease };
-
-  const heroItem = prefersReducedMotion
+  const fade = prefersReducedMotion
     ? { hidden: { opacity: 1 }, show: { opacity: 1 } }
-    : { hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } };
+    : { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } };
+
+  if (loading) return <Spinner />;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
-    <article className="space-y-8">
-      {/* Hero (Editorial) */}
-      <motion.section
-        initial="hidden"
-        animate="show"
-        transition={{
-          duration: heroTransition.duration,
-          ease: heroTransition.ease,
-          staggerChildren: prefersReducedMotion ? 0 : 0.06,
-        }}
-        className="relative overflow-hidden glass-card border border-neon-cyan/20 p-6 md:p-10"
-      >
-        {/* Decorative accents */}
-        <div className="absolute -top-24 -left-24 w-80 h-80 bg-neon-pink/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-neon-orange/10 rounded-full blur-3xl" />
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-neon-cyan/40 to-transparent" />
-
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-7">
-            <motion.div variants={heroItem} className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-              <span className="text-neon-blue tracking-[0.22em] uppercase">Field Notes</span>
-              <span className="text-neon-cyan/70">&bull;</span>
-              <span className="text-text-secondary">Homelabs &bull; Infrastructure &bull; Shipping</span>
-            </motion.div>
-
-            <motion.h1
-              variants={heroItem}
-              className="mt-5 text-4xl md:text-6xl font-bold text-neon-green leading-[1.05] tracking-tight"
-            >
-              Welcome to my living
-              <span className="block">
-                <span className="text-neon-pink">portfolio</span>
-                <span className="text-neon-cyan"> </span>
-                <span className="text-neon-cyan/70">&amp;</span>
-                <span className="text-neon-cyan"> </span>
-                <span className="text-neon-orange">blog</span>
-              </span>
-            </motion.h1>
-
-            <motion.p variants={heroItem} className="mt-6 text-lg md:text-xl text-text-primary max-w-2xl">
-              I&rsquo;m <span className="text-neon-pink font-semibold">Pedro</span> &mdash; a software engineer and project manager.
-              I write about building systems, running experiments, and documenting the process.
-            </motion.p>
-
-            <motion.div variants={heroItem} className="mt-8 flex flex-wrap items-center gap-3">
-              <Link to="/blog" className="btn-cta !text-dark-bg hover:!text-dark-bg">
-                Read the blog
-              </Link>
-              <Link to="/search" className="btn-secondary">
-                Search
-              </Link>
-            </motion.div>
-
-            {featuredPost && (
-              <motion.div variants={heroItem} className="mt-10">
-                <div className="text-neon-blue text-sm tracking-[0.22em] uppercase mb-2">Latest</div>
-                <Link
-                  to={`/blog/${featuredPost.slug}`}
-                  className="block border-l-2 border-neon-cyan/40 pl-4 hover:border-neon-cyan transition-colors"
-                >
-                  <div className="text-neon-green font-semibold text-lg hover:text-neon-pink transition-colors">
-                    {featuredPost.title}
-                  </div>
-                  <div className="text-neon-meta mt-1">{formatDate(featuredPost.publishedAt)}</div>
-                </Link>
-              </motion.div>
-            )}
+    <article className="space-y-8 max-w-5xl">
+      {/* Featured / Latest */}
+      {featured && (
+        <motion.section
+          variants={fade}
+          initial="hidden"
+          animate="show"
+          transition={{ duration: 0.35 }}
+          className="glass-card border border-neon-cyan/20 p-6 md:p-8"
+        >
+          <div className="text-xs text-accent-tertiary uppercase tracking-[0.2em] mb-3">
+            {featured.isFeatured ? 'Featured' : 'Latest'}
           </div>
-
-          <motion.aside variants={heroItem} className="lg:col-span-5">
-            <div className="glass-card border border-neon-cyan/20 p-6 md:p-7">
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-neon-blue text-sm tracking-[0.22em] uppercase">Featured</span>
-                {!loading && featuredPost?.publishedAt && (
-                  <span className="text-neon-orange text-sm">{formatDate(featuredPost.publishedAt)}</span>
-                )}
-              </div>
-
-              {loading && (
-                <div className="mt-6 text-neon-cyan">Loading&hellip;</div>
-              )}
-
-              {error && (
-                <div className="mt-6 text-neon-pink">{error}</div>
-              )}
-
-              {!loading && !error && featuredPost && (
-                <>
-                  <h2 className="mt-5 text-2xl md:text-3xl font-bold text-neon-green leading-snug">
-                    {featuredPost.title}
-                  </h2>
-                  <p className="mt-4 text-text-primary line-clamp-4">
-                    {featuredPost.excerpt}
-                  </p>
-
-                  {featuredPost.tags?.length > 0 && (
-                    <div className="mt-5 flex flex-wrap gap-2">
-                      {featuredPost.tags.slice(0, 4).map((tag, index) => (
-                        <span
-                          key={tag}
-                          className={`${['tag-neon', 'tag-accent-pink', 'tag-accent-orange'][index % 3]} text-xs`}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="mt-6">
-                    <Link
-                      to={`/blog/${featuredPost.slug}`}
-                      className="inline-flex items-center gap-2 text-neon-blue font-medium hover:text-neon-pink transition-colors"
-                    >
-                      Read featured
-                      <span aria-hidden>→</span>
-                    </Link>
-                  </div>
-                </>
-              )}
+          <Link to={`/posts/${featured.slug}`}>
+            <h2 className="text-2xl md:text-3xl font-bold text-accent-heading hover:text-neon-cyan transition-colors">
+              {featured.title}
+            </h2>
+          </Link>
+          {featured.excerpt && (
+            <p className="mt-3 text-text-secondary line-clamp-3">{featured.excerpt}</p>
+          )}
+          {featured.tags.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {featured.tags.map((tag) => (
+                <Link key={tag.id} to={`/tags/${tag.slug}`} className="tag-neon text-xs">
+                  {tag.name}
+                </Link>
+              ))}
             </div>
-          </motion.aside>
-        </div>
-      </motion.section>
-
-      {/* Featured Post Section */}
-      {loading && (
-        <div className="text-center text-neon-cyan">Loading featured post...</div>
+          )}
+          <Link
+            to={`/posts/${featured.slug}`}
+            className="inline-flex items-center gap-2 mt-4 text-accent-tertiary font-medium hover:text-neon-cyan transition-colors"
+          >
+            Read more <span aria-hidden>&rarr;</span>
+          </Link>
+        </motion.section>
       )}
 
-      {error && (
-        <div className="text-center text-neon-pink">{error}</div>
-      )}
-
-      {!loading && !error && featuredPost && (
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.25 }}
-          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.35, ease: 'easeOut' }}
+      {/* Recent Posts */}
+      {rest.length > 0 && (
+        <motion.section
+          variants={fade}
+          initial="hidden"
+          animate="show"
+          transition={{ duration: 0.35, delay: 0.1 }}
         >
-          <FeaturedPost post={featuredPost} />
-        </motion.div>
+          <h2 className="heading-neon-secondary mb-4">Recent Posts</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {rest.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+          <div className="mt-6 text-center">
+            <Link to="/posts" className="btn-secondary !text-sm">
+              View all posts
+            </Link>
+          </div>
+        </motion.section>
       )}
 
-      {/* Recent Posts Section */}
-      {!loading && !error && recentPosts.length > 0 && (
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.25 }}
-          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.35, ease: 'easeOut' }}
-        >
-          <RecentPosts posts={recentPosts} />
-        </motion.div>
+      {posts.length === 0 && (
+        <p className="text-text-muted text-center py-16">No posts yet.</p>
       )}
     </article>
   );
-};
-
-export default Home;
+}

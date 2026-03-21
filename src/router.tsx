@@ -1,10 +1,13 @@
 import { createBrowserRouter } from 'react-router';
-import Home from './pages/Home';
-import BlogListPage from './pages/BlogListPage';
-import BlogPostPage from './pages/BlogPostPage';
-import SearchPage from './pages/SearchPage';
-import NotFound from './pages/NotFound';
 import Layout from './components/layout/Layout';
+import Home from './pages/Home';
+import PostsPage from './pages/PostsPage';
+import PostPage from './pages/PostPage';
+import TagPage from './pages/TagPage';
+import SearchPage from './pages/SearchPage';
+import DraftsPage from './pages/DraftsPage';
+import DraftReviewPage from './pages/DraftReviewPage';
+import NotFound from './pages/NotFound';
 
 export const router = createBrowserRouter([
   {
@@ -12,9 +15,15 @@ export const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { index: true, element: <Home /> },
-      { path: 'blog', element: <BlogListPage /> },
-      { path: 'blog/:slug', element: <BlogPostPage /> },
+      { path: 'posts', element: <PostsPage /> },
+      { path: 'posts/:slug', element: <PostPage /> },
+      { path: 'tags/:tag', element: <TagPage /> },
       { path: 'search', element: <SearchPage /> },
+
+      // Admin routes (network-gated at nginx)
+      { path: 'admin/drafts', element: <DraftsPage /> },
+      { path: 'admin/drafts/:id', element: <DraftReviewPage /> },
+
       { path: '*', element: <NotFound /> },
     ],
   },

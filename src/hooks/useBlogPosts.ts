@@ -1,17 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { blogService } from '../services/blogService';
-import { type BlogPost } from '../types/index.ts';
+import type { BlogPost, PaginatedResponse } from '../types';
 
-export const useBlogPosts = () => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
+export function useBlogPosts(page = 1, size = 20) {
+  const [data, setData] = useState<PaginatedResponse<BlogPost> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchPosts = useCallback(async () => {
     setLoading(true);
     try {
-      const response: BlogPost[] = await blogService.getPosts();
-      setPosts(response);
+      const response = await blogService.getPosts(page, size);
+      setData(response);
       setError(null);
     } catch (err) {
       setError('Failed to fetch posts.');
@@ -19,15 +19,17 @@ export const useBlogPosts = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page, size]);
 
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
 
-  const refresh = () => {
-      fetchPosts();
-  }
-
-  return { posts, loading, error, refresh };
-};
+  return {
+    posts: data?.data ?? [],
+    pagination: data?.pagination ?? null,
+    loading,
+    error,
+    refresh: fetchPosts,
+  };
+}

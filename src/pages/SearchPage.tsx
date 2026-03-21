@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useSearch } from '../hooks/useSearch';
-import BlogList from '../components/blog/BlogList';
+import PostList from '../components/post/PostList';
 import { Search } from 'lucide-react';
 
-const SearchPage: React.FC = () => {
+export default function SearchPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const urlQuery = useMemo(() => new URLSearchParams(location.search).get('q') || '', [location.search]);
@@ -13,9 +13,7 @@ const SearchPage: React.FC = () => {
 
   useEffect(() => {
     setQuery(urlQuery);
-    if (inputRef.current) {
-      inputRef.current.value = urlQuery;
-    }
+    if (inputRef.current) inputRef.current.value = urlQuery;
   }, [urlQuery, setQuery]);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -25,10 +23,8 @@ const SearchPage: React.FC = () => {
   };
 
   return (
-    <article className="space-y-6">
-      <h1 className="heading-neon-primary">
-        Search Posts
-      </h1>
+    <article className="space-y-6 max-w-5xl">
+      <h1 className="heading-neon-primary">Search Posts</h1>
       <form onSubmit={handleSearch} className="relative w-full max-w-lg">
         <input
           ref={inputRef}
@@ -37,19 +33,17 @@ const SearchPage: React.FC = () => {
           className="input-neon w-full pl-12"
           placeholder="Search by title or tag..."
         />
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neon-blue" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-accent-tertiary" />
       </form>
 
       {query && (
         <div className="mt-4">
-            <h2 className="heading-neon-secondary mb-4">
-                Results for &ldquo;{query}&rdquo;
-            </h2>
-            <BlogList posts={results} loading={loading} error={error} />
+          <h2 className="heading-neon-secondary mb-4">
+            Results for &ldquo;{query}&rdquo;
+          </h2>
+          <PostList posts={results} loading={loading} error={error} />
         </div>
       )}
     </article>
   );
-};
-
-export default SearchPage;
+}

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { blogService } from '../services/blogService';
-import { type BlogPost } from '../types';
+import type { BlogPost } from '../types';
 
-export const useBlogPost = (slug: string | undefined) => {
+export function useBlogPost(slug: string | undefined) {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,4 +32,4 @@ export const useBlogPost = (slug: string | undefined) => {
   }, [slug]);
 
   return { post, loading, error };
-};
+}

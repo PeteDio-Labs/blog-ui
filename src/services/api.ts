@@ -10,12 +10,21 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     throw new Error(`API error: ${response.status} ${response.statusText}`);
   }
 
+  if (response.status === 204) return undefined as T;
   return response.json();
 }
 
 export default {
   get: <T>(path: string, params?: Record<string, string>) => {
-    const url = params ? `${path}?${new URLSearchParams(params)}` : path;
+    const searchParams = new URLSearchParams(params);
+    const queryString = searchParams.toString();
+    const url = queryString ? `${path}?${queryString}` : path;
     return request<T>(url);
   },
+  post: <T>(path: string, body?: unknown) =>
+    request<T>(path, { method: 'POST', body: body ? JSON.stringify(body) : undefined }),
+  put: <T>(path: string, body?: unknown) =>
+    request<T>(path, { method: 'PUT', body: body ? JSON.stringify(body) : undefined }),
+  del: <T>(path: string) =>
+    request<T>(path, { method: 'DELETE' }),
 };
