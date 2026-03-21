@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
+RUN bun add @rollup/rollup-linux-arm64-gnu @esbuild/linux-arm64
 
 COPY . .
 RUN bun run build

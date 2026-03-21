@@ -16,7 +16,9 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 export default {
   get: <T>(path: string, params?: Record<string, string>) => {
-    const url = params ? `${path}?${new URLSearchParams(params)}` : path;
+    const searchParams = new URLSearchParams(params);
+    const queryString = searchParams.toString();
+    const url = queryString ? `${path}?${queryString}` : path;
     return request<T>(url);
   },
   post: <T>(path: string, body?: unknown) =>
