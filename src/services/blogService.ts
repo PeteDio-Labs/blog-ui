@@ -1,16 +1,28 @@
 import api from './api';
-import { type BlogPost, type Page } from '../types/index.ts';
+import type { BlogPost, PaginatedResponse, ApiInfo } from '../types';
 
 export const blogService = {
-  getPosts: async (): Promise<BlogPost[]> => {
-    const data = await api.get<Page<BlogPost>>('/posts');
-    return data.content;
-  },
-  searchPosts: async (query: string): Promise<BlogPost[]> => {
-    const data = await api.get<Page<BlogPost>>('/search', { q: query });
-    return data.content;
-  },
-  getPostBySlug: async (slug: string): Promise<BlogPost> => {
-    return api.get<BlogPost>(`/posts/${slug}`);
-  },
+  getPosts: (page = 1, size = 20) =>
+    api.get<PaginatedResponse<BlogPost>>('/posts', {
+      page: String(page),
+      size: String(size),
+    }),
+
+  getPostBySlug: (slug: string) =>
+    api.get<BlogPost>(`/posts/${slug}`),
+
+  searchPosts: (query: string, page = 1, size = 20) =>
+    api.get<PaginatedResponse<BlogPost>>('/search', {
+      q: query,
+      page: String(page),
+      size: String(size),
+    }),
+
+  getPostsByTag: (tag: string, page = 1, size = 20) =>
+    api.get<PaginatedResponse<BlogPost>>(`/posts/tag/${tag}`, {
+      page: String(page),
+      size: String(size),
+    }),
+
+  getInfo: () => api.get<ApiInfo>('/info'),
 };

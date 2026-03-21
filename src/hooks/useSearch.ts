@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { blogService } from '../services/blogService';
-import { type BlogPost } from '../types';
+import type { BlogPost } from '../types';
 import { useDebounce } from './useDebounce';
 
-export const useSearch = (initialQuery = '') => {
+export function useSearch(initialQuery = '') {
   const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const debouncedQuery = useDebounce(query, 300);
 
   useEffect(() => {
@@ -20,8 +20,8 @@ export const useSearch = (initialQuery = '') => {
     const search = async () => {
       setLoading(true);
       try {
-        const response: BlogPost[] = await blogService.searchPosts(debouncedQuery);
-        setResults(response);
+        const response = await blogService.searchPosts(debouncedQuery);
+        setResults(response.data);
         setError(null);
       } catch (err) {
         setError('Failed to perform search.');
@@ -35,4 +35,4 @@ export const useSearch = (initialQuery = '') => {
   }, [debouncedQuery]);
 
   return { query, setQuery, results, loading, error };
-};
+}
