@@ -39,7 +39,8 @@ These stay and get built on:
 | BlogPostPage.tsx (single post reader) | **PostPage.tsx** — full reader with sticky TOC sidebar | Right-side TOC (desktop), reading progress bar, estimated read time |
 | SearchPage.tsx (debounced search) | **SearchPage.tsx** — keep but improve results display | Show excerpt highlights, tag matches |
 | NotFound.tsx | Keep as-is | |
-| *(new)* | **DraftsPage.tsx** — draft review + publish flow | List blog-agent drafts, preview, approve/reject, publish |
+| *(new)* | **DraftsPage.tsx** — draft list (network-gated) | List blog-agent drafts, preview, approve/reject |
+| *(new)* | **DraftReviewPage.tsx** — single draft review + edit + publish | Direct link from Discord notification, full preview + edit |
 | *(new)* | **TagPage.tsx** — posts filtered by tag | `/tags/:tag` route, reuses post list |
 
 ### Sidebar
@@ -65,7 +66,7 @@ v1.0.0 · dev
 ```
 
 - Tags section auto-populates from `/api/v1/info` (available tags)
-- Draft count fetched from `/api/v1/admin/posts?status=DRAFT`
+- Draft count fetched from `/api/v1/admin/posts?status=DRAFT` (only visible on internal network — sidebar hides it if fetch fails/403)
 - Active route highlighted
 - Collapsible on mobile (existing toggle works)
 
@@ -103,31 +104,58 @@ Features:
 - **Tag badges** — clickable, link to `/tags/:tag`
 - **Responsive**: TOC moves to collapsible accordion on mobile
 
-### Draft Review Flow
+### Draft Review Flow (Network-Gated)
 
-New page at `/drafts` for reviewing blog-agent output:
+Admin pages at `/admin/drafts` — only accessible on MetalLB IP (`192.168.50.241`). Nginx returns 403 when accessed through Cloudflare tunnel.
+
+**How you get there**: Blog-agent creates a draft → publishes event to notification-service → Pete Bot picks up SSE event → DMs you on Discord with a direct link:
+
+> Draft ready: "Weekly Recap: March 17–23"
+> Review at: http://192.168.50.241/admin/drafts/42
+
+**Draft list** (`/admin/drafts`):
 
 ```
-┌─────────────────────────────────────────────┐
-│ Drafts (3 pending review)                    │
-├─────────────────────────────────────────────┤
-│                                              │
-│ 📝 How the Blog Writes Itself               │
-│    blog-agent · 2 hours ago · deploy-changelog│
-│    [Preview] [Publish] [Reject]              │
-│                                              │
-│ 📝 Weekly Recap: March 17–23                 │
-│    blog-agent · 5 hours ago · weekly-recap   │
-│    [Preview] [Publish] [Reject]              │
-│                                              │
-└─────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────┐
+│ Drafts (3 pending review)                        │
+├─────────────────────────────────────────────────┤
+│                                                  │
+│ 📝 How the Blog Writes Itself                    │
+│    blog-agent · 2 hours ago · deploy-changelog   │
+│    [Review] [Publish] [Reject]                   │
+│                                                  │
+│ 📝 Weekly Recap: March 17–23                     │
+│    blog-agent · 5 hours ago · weekly-recap       │
+│    [Review] [Publish] [Reject]                   │
+│                                                  │
+└─────────────────────────────────────────────────┘
 ```
 
-- List drafts from `GET /api/v1/admin/posts?status=DRAFT`
-- Preview renders full markdown in a modal or inline expand
-- Publish calls `PUT /api/v1/admin/posts/:id` with `status: PUBLISHED`
-- Reject calls `DELETE /api/v1/admin/posts/:id` (or sets status to ARCHIVED)
-- No auth — this is a homelab, access is network-gated
+**Single draft review** (`/admin/drafts/:id`):
+
+```
+┌──────────┬──────────────────────────────────────┐
+│          │                                      │
+│ Sidebar  │  Draft: "Weekly Recap: March 17–23"  │
+│          │  blog-agent · 5 hours ago            │
+│          │                                      │
+│          │  [Edit] [Publish] [Reject] [Unlisted]│
+│          │                                      │
+│          │  ─────────────────────────────────    │
+│          │                                      │
+│          │  ## This Week in the Homelab          │
+│          │  Full markdown preview renders here   │
+│          │  with the same PostReader component   │
+│          │                                      │
+└──────────┴──────────────────────────────────────┘
+```
+
+- **Review**: Full markdown preview using the same `PostReader` component as published posts
+- **Edit**: Inline markdown editor — edit content/title/excerpt/tags before publishing
+- **Publish**: `POST /api/v1/admin/posts/:id/publish` → sets PUBLISHED + publishedAt
+- **Unlisted**: `PUT /api/v1/admin/posts/:id` with `status: UNLISTED` → shareable via direct link but not in feeds
+- **Reject**: `DELETE /api/v1/admin/posts/:id` or set ARCHIVED
+- **No auth** — network-gated at nginx, only reachable on local network
 
 ---
 
@@ -169,7 +197,8 @@ interface BlogPost {
   slug: string;
   content: string;
   excerpt: string | null;
-  status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | 'SCHEDULED';
+  status: 'DRAFT' | 'PUBLISHED' | 'UNLISTED' | 'ARCHIVED';
+  source: 'seed' | 'blog-agent' | 'manual';
   isFeatured: boolean;
   viewCount: number;
   createdAt: string;
@@ -196,10 +225,12 @@ searchPosts(query, page?, size?): Promise<PaginatedResponse<BlogPost>>
 getPostsByTag(tag, page?, size?): Promise<PaginatedResponse<BlogPost>>
 getInfo(): Promise<ApiInfo>
 
-// adminService.ts (new — for draft review)
+// adminService.ts (new — for draft review, network-gated at nginx)
 getDrafts(page?, size?): Promise<PaginatedResponse<BlogPost>>
+getDraft(id): Promise<BlogPost>
 publishDraft(id): Promise<BlogPost>
 rejectDraft(id): Promise<void>
+updateDraft(id, updates): Promise<BlogPost>
 ```
 
 ---
@@ -212,12 +243,17 @@ createBrowserRouter([
     path: '/',
     element: <Layout />,
     children: [
+      // Public routes (accessible via Cloudflare tunnel)
       { index: true, element: <Home /> },
       { path: 'posts', element: <PostsPage /> },
       { path: 'posts/:slug', element: <PostPage /> },
       { path: 'tags/:tag', element: <TagPage /> },
       { path: 'search', element: <SearchPage /> },
-      { path: 'drafts', element: <DraftsPage /> },
+
+      // Admin routes (network-gated — MetalLB IP only, nginx blocks via Cloudflare)
+      { path: 'admin/drafts', element: <DraftsPage /> },
+      { path: 'admin/drafts/:id', element: <DraftReviewPage /> },
+
       { path: '*', element: <NotFound /> },
     ],
   },
@@ -228,7 +264,10 @@ createBrowserRouter([
 - `/blog` → `/posts` (cleaner, matches VitePress convention)
 - `/blog/:slug` → `/posts/:slug`
 - `/tags/:tag` (new)
-- `/drafts` (new)
+- `/admin/drafts` (new, network-gated)
+- `/admin/drafts/:id` (new, direct review link from Discord notification)
+
+**Network gating:** Nginx returns 403 for `/admin/*` paths when the request comes through Cloudflare tunnel. Admin routes are only accessible on the MetalLB IP (`192.168.50.241`). Blog-agent sends draft review links via notification-service → Pete Bot DM with the internal URL.
 
 ---
 
@@ -255,9 +294,10 @@ src/
 │   │   ├── PostNav.tsx         # Previous/Next post links
 │   │   ├── TableOfContents.tsx # Sticky right-side heading nav
 │   │   └── CopyCodeButton.tsx  # Click-to-copy on code blocks
-│   ├── draft/
-│   │   ├── DraftList.tsx       # Draft cards with preview/publish/reject
-│   │   └── DraftPreview.tsx    # Modal or inline markdown preview
+│   ├── admin/
+│   │   ├── DraftList.tsx       # Draft cards with review/publish/reject actions
+│   │   ├── DraftEditor.tsx     # Inline markdown editor for draft content
+│   │   └── DraftActions.tsx    # Publish / Unlisted / Reject action bar
 │   ├── search/
 │   │   └── SearchResults.tsx   # Result cards with excerpt highlights
 │   ├── markdown/
@@ -274,7 +314,8 @@ src/
 │   ├── PostPage.tsx            # Single post reader + TOC
 │   ├── TagPage.tsx             # Posts by tag
 │   ├── SearchPage.tsx          # Search with highlights
-│   ├── DraftsPage.tsx          # Draft review + publish
+│   ├── DraftsPage.tsx          # Draft list (network-gated)
+│   ├── DraftReviewPage.tsx     # Single draft review + edit + publish (network-gated)
 │   └── NotFound.tsx            # 404
 ├── hooks/
 │   ├── usePosts.ts             # Fetch paginated posts
@@ -362,21 +403,29 @@ These exist from pre-Phase 0 or Phase 1 and are no longer needed:
 - [ ] Improve `SearchPage.tsx` — excerpt highlights in results
 - [ ] Update `Layout.tsx` — TOC slot for post pages
 
-### Phase 3: Draft Review
-- [ ] Build `adminService.ts` — getDrafts, publishDraft, rejectDraft
+### Phase 3: Admin / Draft Review (network-gated)
+- [ ] Build `adminService.ts` — getDrafts, getDraft, publishDraft, updateDraft, rejectDraft
 - [ ] Build `useDrafts.ts` — fetch + mutate drafts
-- [ ] Build `DraftList.tsx` — draft cards with actions
-- [ ] Build `DraftPreview.tsx` — markdown preview (modal or inline)
-- [ ] Build `DraftsPage.tsx` — draft review page
+- [ ] Build `DraftList.tsx` — draft cards with source badge + actions
+- [ ] Build `DraftEditor.tsx` — inline markdown editor (textarea + live preview)
+- [ ] Build `DraftActions.tsx` — Publish / Unlisted / Reject action bar
+- [ ] Build `DraftsPage.tsx` — draft list page
+- [ ] Build `DraftReviewPage.tsx` — single draft review (direct link from Discord DM)
+- [ ] Add `/admin/*` routes to router
+- [ ] Sidebar: show "Drafts (N)" only when admin API is reachable (hide on 403)
 
 ### Phase 4: Polish + Deploy
 - [ ] Remove dead components (BlogCard, BlogList, FeaturedPost, RecentPosts, etc.)
 - [ ] Verify Framer Motion transitions on new routes
 - [ ] Mobile responsiveness pass (TOC → accordion, sidebar toggle)
-- [ ] Update nginx.conf if route paths changed
+- [ ] Update nginx.conf:
+  - `/admin/*` → return 403 unless request is on internal network (not via CF tunnel)
+  - Route paths updated for `/posts`, `/tags`, `/admin`
+  - SPA catch-all for new routes
 - [ ] Update Vite proxy config if API URL changed
 - [ ] CI build verification
 - [ ] Push, verify ArgoCD picks up new image
+- [ ] Verify `/admin/drafts` accessible on `192.168.50.241`, blocked on `dev.petedillo.com`
 
 ---
 
