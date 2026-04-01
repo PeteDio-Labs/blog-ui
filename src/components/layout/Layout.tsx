@@ -3,11 +3,15 @@ import { Outlet, useLocation } from 'react-router';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import Header from './Header';
 import Sidebar from './Sidebar';
+import { useAnalytics } from '../../hooks/useAnalytics';
 
 const Layout = () => {
     const location = useLocation();
     const prefersReducedMotion = useReducedMotion();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    // Fire analytics pageview on every route change
+    useAnalytics();
 
     const ease = [0.16, 1, 0.3, 1] as const;
 

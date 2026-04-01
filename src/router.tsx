@@ -7,6 +7,7 @@ import TagPage from './pages/TagPage';
 import SearchPage from './pages/SearchPage';
 import DraftsPage from './pages/DraftsPage';
 import DraftReviewPage from './pages/DraftReviewPage';
+import AdminAnalyticsPage from './pages/AdminAnalyticsPage';
 import NotFound from './pages/NotFound';
 
 export const router = createBrowserRouter([
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
       // Admin routes (network-gated at nginx)
       { path: 'admin/drafts', element: <DraftsPage /> },
       { path: 'admin/drafts/:id', element: <DraftReviewPage /> },
+      { path: 'admin/analytics', element: <AdminAnalyticsPage /> },
 
       { path: '*', element: <NotFound /> },
     ],
