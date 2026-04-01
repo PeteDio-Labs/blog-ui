@@ -119,7 +119,7 @@ const Home: React.FC = () => {
                     {featuredPost.excerpt}
                   </p>
 
-                  {featuredPost.tags?.length > 0 && (
+                  {featuredPost.tags && featuredPost.tags.length > 0 && (
                     <div className="mt-5 flex flex-wrap gap-2">
                       {featuredPost.tags.slice(0, 4).map((tag, index) => (
                         <span
