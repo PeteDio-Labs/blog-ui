@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router';
 import { Home, FileText, Search, Tag, ChevronDown, ClipboardList } from 'lucide-react';
 import clsx from 'clsx';
 import { useTags } from '../../hooks/useTags';
+import { useEnvironment } from '../../hooks/useEnvironment';
 import { adminService } from '../../services/adminService';
 
 interface SidebarProps {
@@ -14,6 +15,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
   const location = useLocation();
   const pathname = location.pathname;
   const { tags } = useTags();
+  const { info } = useEnvironment();
   const [tagsOpen, setTagsOpen] = useState(true);
   const [draftCount, setDraftCount] = useState<number | null>(null);
 
@@ -108,8 +110,8 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
             </div>
           )}
 
-          {/* Admin: Drafts (hidden if network-gated) */}
-          {draftCount !== null && (
+          {/* Admin: Drafts (hidden in prod or if network-gated) */}
+          {info && info.environment !== 'prod' && draftCount !== null && (
             <>
               <div className="my-3 border-t border-neon-cyan/10" />
               <Link
