@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router';
 import { useTags } from '../hooks/useTags';
-import PostCard from '../components/post/PostCard';
+import BlogCard from '../components/blog/BlogCard';
 import Spinner from '../components/common/Spinner';
 import ErrorMessage from '../components/common/ErrorMessage';
 import Pagination from '../components/common/Pagination';
@@ -72,7 +72,7 @@ export default function TagPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {data.data.map((post) => (
-                <PostCard key={post.id} post={post} />
+                <BlogCard key={post.id} post={post} />
               ))}
             </div>
           )}

@@ -1,4 +1,4 @@
-import PostCard from './PostCard';
+import BlogCard from '../blog/BlogCard';
 import Spinner from '../common/Spinner';
 import ErrorMessage from '../common/ErrorMessage';
 import type { BlogPost } from '../../types';
@@ -17,9 +17,9 @@ export default function PostList({ posts, loading, error }: PostListProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
+        <BlogCard key={post.id} post={post} />
       ))}
     </div>
   );
