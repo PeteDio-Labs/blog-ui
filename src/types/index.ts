@@ -18,6 +18,7 @@ export interface BlogPost {
   source: PostSource;
   isFeatured: boolean;
   viewCount: number;
+  coverImageUrl?: string | null;
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
