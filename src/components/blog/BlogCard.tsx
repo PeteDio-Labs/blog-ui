@@ -11,7 +11,7 @@ interface BlogCardProps {
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({ post, imageUrl }) => {
-  const readTime = estimateReadTime(post.content);
+  const readTime = post.readTimeMinutes ?? estimateReadTime(post.content ?? '');
 
   const getTagClass = (index: number) => {
     const classes = ['tag-neon', 'tag-accent-pink', 'tag-accent-orange'];

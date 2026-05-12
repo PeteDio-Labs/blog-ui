@@ -35,7 +35,7 @@ export default function PostPage() {
               <h1 className="heading-neon-primary mb-4">{post.title}</h1>
               <PostMeta post={post} />
             </header>
-            <PostReader content={post.content} />
+            <PostReader content={post.content ?? ''} />
             <PostNav previous={previous} next={next} />
           </article>
 

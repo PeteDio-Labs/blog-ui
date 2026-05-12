@@ -34,12 +34,12 @@ const Home: React.FC = () => {
           ease: heroTransition.ease,
           staggerChildren: prefersReducedMotion ? 0 : 0.06,
         }}
-        className="relative overflow-hidden glass-card border border-neon-cyan/20 p-6 md:p-10"
+        className="relative overflow-hidden glass-card p-6 md:p-10"
       >
-        {/* Decorative accents */}
-        <div className="absolute -top-24 -left-24 w-80 h-80 bg-neon-pink/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-neon-orange/10 rounded-full blur-3xl" />
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-neon-cyan/40 to-transparent" />
+        {/* Decorative accents — subtle Apple-glass spotlights */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-accent-primary/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-32 -right-32 w-[28rem] h-[28rem] bg-accent-secondary/[0.07] rounded-full blur-3xl" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10">
           <div className="lg:col-span-7">
@@ -51,15 +51,19 @@ const Home: React.FC = () => {
 
             <motion.h1
               variants={heroItem}
-              className="mt-5 text-4xl md:text-6xl font-bold text-neon-green leading-[1.05] tracking-tight"
+              className="mt-5 text-4xl md:text-6xl font-semibold text-accent-heading leading-[1.05] tracking-tight"
             >
               Welcome to my living
               <span className="block">
-                <span className="text-neon-pink">portfolio</span>
-                <span className="text-neon-cyan"> </span>
-                <span className="text-neon-cyan/70">&amp;</span>
-                <span className="text-neon-cyan"> </span>
-                <span className="text-neon-orange">blog</span>
+                <span
+                  className="bg-clip-text text-transparent"
+                  style={{
+                    backgroundImage:
+                      'linear-gradient(90deg, var(--theme-accent-primary), var(--theme-accent-secondary))',
+                  }}
+                >
+                  portfolio &amp; blog
+                </span>
               </span>
             </motion.h1>
 
@@ -94,7 +98,7 @@ const Home: React.FC = () => {
           </div>
 
           <motion.aside variants={heroItem} className="lg:col-span-5">
-            <div className="glass-card border border-neon-cyan/20 p-6 md:p-7">
+            <div className="glass-card p-6 md:p-7">
               <div className="flex items-center justify-between gap-4">
                 <span className="text-neon-blue text-sm tracking-[0.22em] uppercase">Featured</span>
                 {!loading && featuredPost?.publishedAt && (

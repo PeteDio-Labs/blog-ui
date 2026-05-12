@@ -5,7 +5,8 @@
 
 @layer base {
   :root {
-    font-family: 'Inter', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto',
+      'Helvetica Neue', sans-serif;
     line-height: 1.5;
     font-weight: 400;
     font-synthesis: none;
@@ -44,7 +45,7 @@
 
   h1, h2, h3, h4, h5, h6 {
     color: var(--theme-accent-heading);
-    @apply font-bold;
+    @apply font-semibold tracking-tight;
   }
 
   a {
@@ -52,19 +53,31 @@
   }
 
   ::selection {
-    @apply bg-accent-secondary text-dark-bg;
+    @apply bg-accent-primary/30 text-accent-heading;
   }
 
   ::-moz-selection {
-    @apply bg-accent-secondary text-dark-bg;
+    @apply bg-accent-primary/30 text-accent-heading;
   }
 }
 
 @layer components {
-  /* Glass Material System */
+  /* ── Apple Glassmorphism — Liquid Glass Effect (ported from MC) ── */
+  .glass {
+    background: rgba(var(--glass-surface), 0.7);
+    backdrop-filter: blur(40px) saturate(1.8);
+    -webkit-backdrop-filter: blur(40px) saturate(1.8);
+    border: 1px solid rgba(var(--glass-border), 0.1);
+    box-shadow:
+      0 8px 32px 0 rgba(var(--glass-shadow), 0.37),
+      inset 0 -2px 8px 0 rgba(var(--glass-border), 0.05),
+      inset 0 1px 2px 0 rgba(var(--glass-border), 0.1);
+  }
+
   .glass-card {
     background: rgba(var(--glass-surface), 0.6);
     backdrop-filter: blur(40px) saturate(1.8);
+    -webkit-backdrop-filter: blur(40px) saturate(1.8);
     border: 1px solid rgba(var(--glass-border), 0.1);
     box-shadow:
       0 8px 32px 0 rgba(var(--glass-shadow), 0.37),
@@ -77,6 +90,7 @@
   .glass-panel {
     background: rgba(var(--glass-surface), 0.75);
     backdrop-filter: blur(30px) saturate(1.5);
+    -webkit-backdrop-filter: blur(30px) saturate(1.5);
     border: 1px solid rgba(var(--glass-border), 0.1);
     box-shadow:
       0 8px 32px 0 rgba(var(--glass-shadow), 0.37),
@@ -84,150 +98,165 @@
       inset 0 1px 2px 0 rgba(var(--glass-border), 0.1);
   }
 
+  .glass-modal {
+    background: rgba(var(--glass-surface), 0.85);
+    backdrop-filter: blur(60px) saturate(2);
+    -webkit-backdrop-filter: blur(60px) saturate(2);
+    border: 1px solid rgba(var(--glass-border), 0.12);
+    box-shadow:
+      0 16px 48px 0 rgba(var(--glass-shadow), 0.5),
+      inset 0 1px 2px 0 rgba(var(--glass-border), 0.12);
+  }
+
   @media (prefers-reduced-transparency: reduce) {
+    .glass,
     .glass-card,
-    .glass-panel {
+    .glass-panel,
+    .glass-modal {
       background: rgba(var(--glass-surface), 0.95);
       backdrop-filter: none;
+      -webkit-backdrop-filter: none;
     }
   }
 
-  /* Typography classes */
+  /* ── Typography ── */
   .heading-neon-primary {
-    @apply text-4xl md:text-5xl font-bold text-accent-heading leading-tight;
+    @apply text-4xl md:text-5xl font-semibold text-accent-heading leading-tight tracking-tight;
   }
 
   .heading-neon-secondary {
-    @apply text-3xl md:text-4xl font-bold text-accent-heading;
+    @apply text-3xl md:text-4xl font-semibold text-accent-heading tracking-tight;
   }
 
   .text-neon-meta {
     @apply text-accent-tertiary text-sm;
   }
 
-  /* Tag/Badge styles */
+  /* ── Tags / chips (frosted glass pills) ── */
   .tag-neon {
-    @apply inline-block px-3 py-1 bg-dark-bg border border-accent-tertiary text-accent-tertiary rounded-full
-           hover:border-accent-primary hover:text-accent-primary transition-all duration-300;
+    @apply inline-block px-3 py-1 rounded-full text-xs font-medium
+           border border-white/10 text-accent-tertiary
+           bg-white/[0.04] backdrop-blur-md
+           hover:border-accent-primary/50 hover:text-accent-primary hover:bg-accent-primary/10
+           transition-all duration-200;
   }
 
   .tag-neon-success {
-    @apply inline-block px-3 py-1 bg-success/10 text-success border border-success rounded-full
-           hover:bg-success/20 transition-all duration-300;
+    @apply inline-block px-3 py-1 rounded-full text-xs font-medium
+           border border-success/40 text-success bg-success/10 backdrop-blur-md
+           hover:bg-success/20 transition-all duration-200;
   }
 
-  /* Link styles */
-  .link-neon {
-    @apply text-accent-tertiary hover:text-accent-primary transition-all duration-200;
-  }
-
-  /* Layout styles */
-  .header-neon {
-    @apply fixed top-0 z-50 w-full border-b border-accent-primary/20;
-    background: rgba(var(--glass-surface), 0.75);
-    backdrop-filter: blur(30px) saturate(1.5);
-  }
-
-  /* Button styles */
-  .btn-primary {
-    @apply px-6 py-3 bg-accent-primary text-dark-bg font-bold rounded-xl
-      hover:shadow-neon-cyan
-      transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent-primary/50;
-  }
-
-  .btn-secondary {
-    @apply px-6 py-3 border border-accent-primary/40 text-accent-primary font-medium rounded-xl
-           bg-white/5 backdrop-blur-xl
-           hover:bg-accent-primary/10 hover:border-accent-primary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-primary/40;
-  }
-
-  /* CTA gradient button */
-  .btn-cta {
-    @apply px-6 py-3 bg-gradient-to-r from-accent-secondary to-accent-primary text-dark-bg font-bold rounded-xl
-           hover:shadow-neon-glow-pink transition-all duration-300 transform hover:scale-105
-           focus:outline-none focus:ring-2 focus:ring-accent-secondary/50;
-  }
-
-  /* Input styles */
-  .input-neon {
-    @apply bg-white/5 border border-accent-tertiary/40 text-text-primary rounded-xl px-4 py-3
-           focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/50 transition-all
-           backdrop-blur-xl;
-  }
-
-  /* Badge styles */
-  .badge-draft {
-    @apply inline-block px-3 py-1 bg-warning/20 text-warning border border-warning rounded-full text-xs font-semibold uppercase;
-  }
-
-  .badge-dev {
-    @apply inline-block px-3 py-1 bg-accent-primary/20 text-accent-primary border border-accent-primary rounded-full text-xs font-semibold uppercase;
-  }
-
-  /* Card styles — gradient border via ::before, solid glass interior via ::after */
-  .card-neon {
-    @apply rounded-2xl p-6 transition-all duration-300 relative;
-    isolation: isolate;
-  }
-
-  .card-neon::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(
-      135deg,
-      rgba(0, 223, 255, 0.6) 0%,
-      rgba(59, 130, 246, 0.3) 50%,
-      rgba(139, 92, 246, 0.4) 100%
-    );
-    opacity: 0.35;
-    transition: opacity 0.3s ease;
-    z-index: -2;
-  }
-
-  .card-neon::after {
-    content: '';
-    position: absolute;
-    inset: 1px;
-    border-radius: calc(1rem - 1px);
-    background: rgba(var(--glass-surface), 0.94);
-    backdrop-filter: blur(40px) saturate(1.8);
-    z-index: -1;
-  }
-
-  .card-neon:hover::before {
-    opacity: 0.6;
-  }
-
-  .card-neon:hover {
-    box-shadow:
-      0 0 15px rgba(0, 223, 255, 0.12),
-      0 0 30px rgba(0, 223, 255, 0.06);
-  }
-
-  /* Accent tag styles */
   .tag-accent-pink {
-    @apply inline-block px-3 py-1 bg-dark-bg border border-accent-secondary text-accent-secondary rounded-full
-           hover:border-accent-secondary hover:bg-accent-secondary/10 hover:shadow-neon-pink transition-all duration-300;
+    @apply inline-block px-3 py-1 rounded-full text-xs font-medium
+           border border-accent-secondary/40 text-accent-secondary
+           bg-accent-secondary/[0.08] backdrop-blur-md
+           hover:border-accent-secondary hover:bg-accent-secondary/15
+           transition-all duration-200;
   }
 
   .tag-accent-orange {
-    @apply inline-block px-3 py-1 bg-dark-bg border border-accent-primary text-accent-primary rounded-full
-           hover:border-accent-primary hover:bg-accent-primary/10 hover:shadow-neon-cyan transition-all duration-300;
+    @apply inline-block px-3 py-1 rounded-full text-xs font-medium
+           border border-accent-primary/40 text-accent-primary
+           bg-accent-primary/[0.08] backdrop-blur-md
+           hover:border-accent-primary hover:bg-accent-primary/15
+           transition-all duration-200;
   }
 
-  /* Blog Card (premium card with gradient hero + optional image) */
+  /* ── Links ── */
+  .link-neon {
+    @apply text-accent-tertiary hover:text-accent-primary transition-colors duration-200;
+  }
+
+  /* ── Layout — sticky header (frosted) ── */
+  .header-neon {
+    @apply fixed top-0 z-50 w-full;
+    border-bottom: 1px solid rgba(var(--glass-border), 0.08);
+    background: rgba(var(--glass-surface), 0.72);
+    backdrop-filter: blur(30px) saturate(1.5);
+    -webkit-backdrop-filter: blur(30px) saturate(1.5);
+  }
+
+  /* ── Buttons ── */
+  .btn-primary {
+    @apply px-5 py-2.5 rounded-xl text-sm font-semibold text-accent-heading
+           bg-accent-primary
+           hover:bg-accent-primary/90
+           shadow-lg shadow-accent-primary/25
+           transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-accent-primary/50;
+  }
+
+  .btn-secondary {
+    @apply px-5 py-2.5 rounded-xl text-sm font-medium text-accent-heading
+           border border-white/10
+           bg-white/[0.06] backdrop-blur-xl
+           hover:bg-white/[0.10] hover:border-white/20
+           transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-accent-primary/40;
+  }
+
+  /* Primary CTA — subtle Apple-style gradient, no glare */
+  .btn-cta {
+    @apply px-5 py-2.5 rounded-xl text-sm font-semibold text-accent-heading
+           bg-gradient-to-r from-accent-primary to-accent-secondary
+           shadow-lg shadow-accent-secondary/20
+           hover:shadow-accent-secondary/30
+           transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-accent-primary/50;
+  }
+
+  /* ── Inputs ── */
+  .input-neon {
+    @apply rounded-xl px-4 py-2.5 text-text-primary
+           border border-white/10 bg-white/[0.04] backdrop-blur-xl
+           placeholder:text-text-muted
+           focus:border-accent-primary/60 focus:bg-white/[0.06]
+           focus:outline-none focus:ring-2 focus:ring-accent-primary/30
+           transition-all duration-200;
+  }
+
+  /* ── Badges ── */
+  .badge-draft {
+    @apply inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide
+           bg-warning/15 text-warning border border-warning/40;
+  }
+
+  .badge-dev {
+    @apply inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide
+           bg-accent-primary/15 text-accent-primary border border-accent-primary/40;
+  }
+
+  /* ── Cards ── */
+  .card-neon {
+    @apply rounded-2xl p-6 transition-all duration-300;
+    background: rgba(var(--glass-surface), 0.6);
+    backdrop-filter: blur(40px) saturate(1.8);
+    -webkit-backdrop-filter: blur(40px) saturate(1.8);
+    border: 1px solid rgba(var(--glass-border), 0.08);
+    box-shadow:
+      0 8px 32px 0 rgba(var(--glass-shadow), 0.37),
+      inset 0 1px 1px 0 rgba(var(--glass-border), 0.06);
+  }
+
+  .card-neon:hover {
+    border-color: rgba(var(--glass-border), 0.16);
+    box-shadow:
+      0 12px 40px 0 rgba(var(--glass-shadow), 0.45),
+      inset 0 1px 1px 0 rgba(var(--glass-border), 0.10);
+  }
+
+  /* ── Blog cards (premium with gradient hero) ── */
   .blog-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   }
 
   .blog-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
+    border-color: rgba(var(--glass-border), 0.18);
     box-shadow:
-      0 0 20px rgba(0, 223, 255, 0.12),
-      0 0 40px rgba(0, 223, 255, 0.06),
-      0 12px 40px rgba(0, 0, 0, 0.4);
+      0 16px 48px 0 rgba(var(--glass-shadow), 0.45),
+      inset 0 1px 1px 0 rgba(var(--glass-border), 0.10);
   }
 
   .blog-card .blog-card__hero::after {
@@ -239,8 +268,8 @@
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(0, 223, 255, 0.3),
-      rgba(255, 51, 102, 0.3),
+      rgba(37, 99, 235, 0.5),
+      rgba(236, 72, 153, 0.4),
       transparent
     );
     opacity: 0;

@@ -12,7 +12,10 @@ export interface BlogPost {
   id: number;
   title: string;
   slug: string;
-  content: string;
+  // `content` is only populated on single-post responses (/posts/:slug,
+  // /admin/posts/:id). List endpoints omit it to keep payloads small —
+  // they return a precomputed `readTimeMinutes` instead.
+  content?: string;
   excerpt: string | null;
   status: PostStatus;
   source: PostSource;
@@ -22,6 +25,7 @@ export interface BlogPost {
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
+  readTimeMinutes?: number;
   tags: Tag[];
 }
 

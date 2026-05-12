@@ -9,7 +9,7 @@ interface PostMetaProps {
 }
 
 export default function PostMeta({ post }: PostMetaProps) {
-  const readTime = estimateReadTime(post.content);
+  const readTime = post.readTimeMinutes ?? estimateReadTime(post.content ?? '');
 
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-secondary">
