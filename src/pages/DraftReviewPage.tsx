@@ -102,7 +102,7 @@ export default function DraftReviewPage() {
 
       <DraftEditor
         title={draft.title}
-        content={draft.content}
+        content={draft.content ?? ''}
         excerpt={draft.excerpt ?? ''}
         onSave={handleSave}
         loading={actionLoading}

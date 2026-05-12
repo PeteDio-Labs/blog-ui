@@ -68,7 +68,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
       >
         <nav className="flex flex-col gap-1 p-4 flex-1 overflow-y-auto">
           {navLink('/', 'Home', Home)}
-          {navLink('/posts', 'All Posts', FileText)}
+          {navLink('/posts', 'Blog', FileText)}
           {navLink('/search', 'Search', Search)}
 
           {/* Tags section */}
@@ -139,6 +139,9 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         <div className="p-4 border-t border-neon-cyan/10">
           <p className="text-xs text-text-muted text-center">
             &copy; {new Date().getFullYear()} PeteDillo.com
+          </p>
+          <p className="text-xs text-text-muted text-center mt-1">
+            This site uses anonymous session analytics. No personal data is collected.
           </p>
         </div>
       </aside>
